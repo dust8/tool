@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>json</title>
+    <script src="https://unpkg.com/lodash@4.16.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            function format(sourceText) {
+                try {
+                    var parse = JSON.parse(sourceText);
+                    return JSON.stringify(parse, null, '    ');
+                }
+                catch (err) {
+                    return err.message;
+                }
+            }
+
+            new Vue({
+                el: '#editor',
+                data: {
+                    input: '[1,2]'
+                },
+                computed: {
+                    parseJson: function () {
+                        return format(this.input);
+                    }
+                },
+                methods: {
+                    update: _.debounce(function (e) {
+                        this.input = e.target.value
+                    }, 300)
+                }
+            })
+        }
+    </script>
+    <style>
+        html,
+        body,
+        #editor {
+            margin: 0;
+            height: 100%;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+        }
+
+        textarea,
+        #editor div {
+            display: inline-block;
+            width: 49%;
+            height: 100%;
+            vertical-align: top;
+            box-sizing: border-box;
+            padding: 0 20px;
+        }
+
+        textarea {
+            border: none;
+            border-right: 1px solid #ccc;
+            resize: none;
+            outline: none;
+            font-size: 14px;
+            font-family: 'Monaco', courier, monospace;
+            padding: 20px;
+        }
+
+        textarea[readonly] {
+            background-color: #fafafa;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='editor'>
+        <textarea :value="input" @input="update"></textarea>
+        <textarea v-html="parseJson" readonly></textarea>
+    </div>
+</body>
+
+</html>
